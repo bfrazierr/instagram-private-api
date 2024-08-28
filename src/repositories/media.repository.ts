@@ -363,21 +363,33 @@ export class MediaRepository extends Repository {
   }
 
   public async configureVideo(options: MediaConfigureTimelineVideoOptions) {
-    const now = DateTime.local().toFormat('yyyy:mm:dd HH:mm:ss');
+    // const now = DateTime.local().toFormat('yyyy:mm:dd HH:mm:ss');
 
     const form = this.applyConfigureDefaults<MediaConfigureTimelineVideoOptions>(options, {
       width: options.width,
       height: options.height,
 
-      upload_id: Date.now().toString(),
-      timezone_offset: this.client.state.timezoneOffset,
-      date_time_original: now,
-      caption: '',
+      // upload_id: Date.now().toString(),
+      // timezone_offset: this.client.state.timezoneOffset,
+      // date_time_original: now,
+      // caption: '',
+      // // source_type: '4',
+      // device_id: this.client.state.deviceId,
+      // filter_type: '0',
+      // audio_muted: false,
+      // poster_frame_index: 0,
+
+      archive_only: false,
+      clips_share_preview_to_feed: 1,
+      disable_comments: 0,
+      disable_oa_reuse: false,
+      igtv_share_preview_to_feed: 1,
+      is_meta_only_post: 0,
+      is_unified_video: 1,
+      like_and_view_counts_disabled: 0,
+      share_to_threads: false,
       source_type: '4',
-      device_id: this.client.state.deviceId,
-      filter_type: '0',
-      audio_muted: false,
-      poster_frame_index: 0,
+      video_subtitles_enabled: 0,
     });
 
     if (typeof form.usertags !== 'undefined') {
@@ -388,12 +400,12 @@ export class MediaRepository extends Repository {
     }
 
     const { body } = await this.client.request.send<MediaRepositoryConfigureResponseRootObject>({
-      url: '/api/v1/media/configure/',
+      url: '/api/v1/media/configure_to_clips/',
       method: 'POST',
       qs: {
         video: '1',
       },
-      form: this.client.request.sign(form),
+      form: form,
     });
     return body;
   }
@@ -682,10 +694,10 @@ export class MediaRepository extends Repository {
    * save a media, or save it to collection if you pass the collection ids in array
    * @param {string} mediaId - The mediaId of the post
    * @param {string[]} [collection_ids] - Optional, The array of collection ids if you want to save the media to a specific collection
-   * Example: 
+   * Example:
    * save("2524149952724070925_1829855275") save media
    * save("2524149952724070925_1829855275", ["17865977635619975"]) save media to 1 collection
-   * save("2524149952724070925_1829855275", ["17865977635619975", "17845997638619928"]) save media to 2 collection 
+   * save("2524149952724070925_1829855275", ["17865977635619975", "17845997638619928"]) save media to 2 collection
    */
   public async save(mediaId: string, collection_ids?: string[]) {
     const { body } = await this.client.request.send({
@@ -795,27 +807,24 @@ export class MediaRepository extends Repository {
     });
     return body;
   }
-  
-  private async storyCountdownAction(
-    countdownId: string | number,
-    action: string,
-  ): Promise<StatusResponse> {
+
+  private async storyCountdownAction(countdownId: string | number, action: string): Promise<StatusResponse> {
     const { body } = await this.client.request.send({
       url: `/api/v1/media/${countdownId}/${action}/`,
       method: 'POST',
       form: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
-        _uuid: this.client.state.uuid
+        _uuid: this.client.state.uuid,
       }),
     });
     return body;
   }
-  
+
   public async storyCountdownFollow(countdownId: string | number) {
     return this.storyCountdownAction(countdownId, 'follow_story_countdown');
   }
-  
+
   public async storyCountdownUnfollow(countdownId: string | number) {
     return this.storyCountdownAction(countdownId, 'unfollow_story_countdown');
   }

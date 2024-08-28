@@ -3,7 +3,7 @@ import { PostingUsertags } from './posting.options';
 export interface MediaConfigureOptions {
   upload_id: string;
   source_type?: string;
-  disable_comments?: boolean;
+  disable_comments?: number;
   edits?: {
     crop_original_size?: [number, number];
     crop_center?: [number, number];

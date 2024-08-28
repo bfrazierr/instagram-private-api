@@ -169,27 +169,17 @@ export class PublishService extends Repository {
       uploadId: uploadId.toString(),
     });
 
-    await Bluebird.try(() =>
-      this.client.media.uploadFinish({
-        upload_id: uploadId,
-        source_type: '4',
-        video: { length: videoInfo.duration / 1000.0 },
-      }),
-    ).catch(IgResponseError, PublishService.catchTranscodeError(videoInfo, options.transcodeDelay || 5000));
+    // await Bluebird.try(() =>
+    //   this.client.media.uploadFinish({
+    //     upload_id: uploadId,
+    //     source_type: '4',
+    //     video: { length: videoInfo.duration / 1000.0 },
+    //   }),
+    // ).catch(IgResponseError, PublishService.catchTranscodeError(videoInfo, options.transcodeDelay || 5000));
 
     const configureOptions: MediaConfigureTimelineVideoOptions = {
       upload_id: uploadId.toString(),
       caption: options.caption,
-      length: videoInfo.duration / 1000.0,
-      width: videoInfo.width,
-      height: videoInfo.height,
-      clips: [
-        {
-          length: videoInfo.duration / 1000.0,
-          source_type: '4',
-        },
-      ],
-      ...PublishService.makeLocationOptions(options.location),
     };
 
     if (typeof options.usertags !== 'undefined') {
