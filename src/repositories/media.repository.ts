@@ -405,7 +405,7 @@ export class MediaRepository extends Repository {
       qs: {
         video: '1',
       },
-      form: form,
+      form: this.client.request.sign(form),
     });
     return body;
   }

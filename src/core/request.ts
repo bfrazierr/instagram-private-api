@@ -114,10 +114,9 @@ export class Request {
 
   public sign(payload: Payload): SignedPost {
     const json = typeof payload === 'object' ? JSON.stringify(payload) : payload;
-    const signature = this.signature(json);
     return {
       ig_sig_key_version: this.client.state.signatureVersion,
-      signed_body: `${signature}.${json}`,
+      signed_body: `SIGNATURE.${json}`,
     };
   }
 
